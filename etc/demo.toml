@@ -11,6 +11,6 @@ key  = "this is your app key"
 # // ErrorLevel: "error",
 # // FatalLevel: "fatal",
 # // PanicLevel: "panic",
-level = "debug"
+level = "info"
 format = "text"
 to = "stdout"
