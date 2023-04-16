@@ -2,9 +2,15 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/spf13/cobra"
+	"go-notebook/apps"
 	"go-notebook/conf"
+	"go-notebook/protocol"
+
+	// 注册所有的服务实例
+	_ "go-notebook/apps/all"
 )
 
 var (
@@ -28,9 +34,31 @@ var StartCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Println("start and stop")
-		return nil
+		apps.InitImpl()
+
+		svc := newManager()
+
+		return svc.Start()
 	},
+}
+
+// 有2个服务, 一个http, 一个gprc
+func newManager() *manager {
+	return &manager{
+		http: protocol.NewHttpService(),
+		l:    zap.L().Named("CLI"),
+	}
+}
+
+// 用于管理所有需要启动的服务
+// 1. HTTP服务的启动
+type manager struct {
+	http *protocol.HttpService
+	l    logger.Logger
+}
+
+func (m *manager) Start() error {
+	return m.http.Start()
 }
 
 // 还没有初始化Logger实例

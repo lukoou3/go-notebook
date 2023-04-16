@@ -1,5 +1,7 @@
 package conf
 
+import "fmt"
+
 // 全局config实例对象,
 // 也就是我们程序，在内存中的配置对象
 // 程序内部获取配置, 都通过读取该对象
@@ -45,6 +47,10 @@ type App struct {
 	Name string `toml:"name" env:"APP_NAME"`
 	Host string `toml:"host" env:"APP_HOST"`
 	Port string `toml:"port" env:"APP_PORT"`
+}
+
+func (a *App) HttpAddr() string {
+	return fmt.Sprintf("%s:%s", a.Host, a.Port)
 }
 
 func NewDefaultLog() *Log {
