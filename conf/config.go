@@ -23,16 +23,18 @@ func C() *Config {
 // 初始化一个有默认值的Config对象
 func NewDefaultConfig() *Config {
 	return &Config{
-		App: NewDefaultApp(),
-		Log: NewDefaultLog(),
+		App:    NewDefaultApp(),
+		Log:    NewDefaultLog(),
+		Sqlite: NewDefaultSqlite(),
 	}
 }
 
 // Config 应用配置
 // 通过封装为一个对象, 来与外部配置进行对接
 type Config struct {
-	App *App `toml:"app"`
-	Log *Log `toml:"log"`
+	App    *App    `toml:"app"`
+	Log    *Log    `toml:"log"`
+	Sqlite *Sqlite `toml:"sqlite"`
 }
 
 func NewDefaultApp() *App {

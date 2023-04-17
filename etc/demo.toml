@@ -4,6 +4,9 @@ host = "0.0.0.0"
 port = "8080"
 key  = "this is your app key"
 
+[sqlite]
+file = "datas/base_udf_data"
+
 [log]
 # // DebugLevel: "debug",
 # // InfoLevel:  "info",
