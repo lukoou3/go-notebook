@@ -16,6 +16,7 @@ import (
 // HttpService构造函数
 func NewHttpService() *HttpService {
 	// new gin router实例, 并没有加载Handler
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
 	server := &http.Server{

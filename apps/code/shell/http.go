@@ -19,11 +19,8 @@ type Handler struct {
 }
 
 func (h *Handler) query(c *gin.Context) {
-	println(99)
 	// 从http请求的query string 中获取参数
 	req := NewQueryShellCodeHTTP(c.Request)
-
-	println(111)
 
 	// 进行接口调用, 返回 肯定有成功或者失败
 	set, err := h.svc.Query(c.Request.Context(), req)
@@ -42,7 +39,6 @@ func (h *Handler) Config() {
 
 // 完成了 Http Handler的注册
 func (h *Handler) Registry(r gin.IRouter) {
-	println(222)
 	r.GET("/code/shellCodes", h.query)
 }
 

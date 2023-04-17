@@ -15,9 +15,23 @@ type ShellCode struct {
 	UpdateTime string `json:"update_time"`
 }
 
+func NewShellCode() *ShellCode {
+	return &ShellCode{}
+}
+
+func NewShellCodeSet() *ShellCodeSet {
+	return &ShellCodeSet{
+		Items: []*ShellCode{},
+	}
+}
+
 type ShellCodeSet struct {
 	Total int          `json:"total"`
 	Items []*ShellCode `json:"items"`
+}
+
+func (s *ShellCodeSet) Add(item *ShellCode) {
+	s.Items = append(s.Items, item)
 }
 
 type QueryShellCodeRequest struct {
@@ -26,18 +40,30 @@ type QueryShellCodeRequest struct {
 	Keywords   string `json:"kws"`
 }
 
+func (req *QueryShellCodeRequest) GetPageSize() uint {
+	return uint(req.PageSize)
+}
+
+func (req *QueryShellCodeRequest) OffSet() int64 {
+	return int64((req.PageNumber - 1) * req.PageSize)
+}
+
 func NewQueryShellCodeHTTP(r *http.Request) *QueryShellCodeRequest {
 	req := NewQueryShellCodeRequest()
 	// query string
 	qs := r.URL.Query()
 	pss := qs.Get("page_size")
 	if pss != "" {
-		req.PageSize, _ = strconv.Atoi(pss)
+		if n, err := strconv.Atoi(pss); err == nil {
+			req.PageSize = n
+		}
 	}
 
 	pns := qs.Get("page_number")
 	if pns != "" {
-		req.PageNumber, _ = strconv.Atoi(pns)
+		if n, err := strconv.Atoi(pns); err == nil {
+			req.PageNumber = n
+		}
 	}
 
 	req.Keywords = qs.Get("kws")
@@ -46,7 +72,7 @@ func NewQueryShellCodeHTTP(r *http.Request) *QueryShellCodeRequest {
 
 func NewQueryShellCodeRequest() *QueryShellCodeRequest {
 	return &QueryShellCodeRequest{
-		PageSize:   20,
+		PageSize:   10,
 		PageNumber: 1,
 	}
 }
