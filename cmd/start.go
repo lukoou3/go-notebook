@@ -8,6 +8,9 @@ import (
 	"go-notebook/apps"
 	"go-notebook/conf"
 	"go-notebook/protocol"
+	"os"
+	"os/signal"
+	"syscall"
 
 	// 注册所有的服务实例
 	_ "go-notebook/apps/all"
@@ -38,6 +41,10 @@ var StartCmd = &cobra.Command{
 
 		svc := newManager()
 
+		ch := make(chan os.Signal, 1)
+		signal.Notify(ch, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGHUP, syscall.SIGINT)
+		go svc.WaitStop(ch)
+
 		return svc.Start()
 	},
 }
@@ -59,6 +66,19 @@ type manager struct {
 
 func (m *manager) Start() error {
 	return m.http.Start()
+}
+
+// 处理来自外部的中断信号, 比如Terminal
+func (m *manager) WaitStop(ch <-chan os.Signal) {
+	for v := range ch {
+		switch v {
+		default:
+			m.l.Infof("received signal: %s", v)
+
+			// 在关闭外部调用
+			m.http.Stop()
+		}
+	}
 }
 
 // 还没有初始化Logger实例

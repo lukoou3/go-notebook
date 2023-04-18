@@ -7,7 +7,6 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mcube/sqlbuilder"
 	"go-notebook/apps"
-	"go-notebook/apps/code"
 	"go-notebook/conf"
 )
 
@@ -42,6 +41,7 @@ func (i *ShellCodeServiceImpl) Query(ctx context.Context, req *QueryShellCodeReq
 			"%"+req.Keywords+"%",
 		)
 	}
+	//b.Order("update_time").Desc()
 	b.Limit(req.OffSet(), req.GetPageSize())
 	querySQL, args := b.Build()
 
@@ -94,13 +94,13 @@ func (i *ShellCodeServiceImpl) Config() {
 	// 		1. Logger全局实例
 	// 		2. Logger Level的动态调整, Logrus不支持Level共同调整
 	// 		3. 加入日志轮转功能的集合
-	i.l = zap.L().Named("Host")
+	i.l = zap.L().Named("ShellCode")
 	i.db = conf.C().Sqlite.GetDB()
 }
 
 // 服务服务的名称
 func (i *ShellCodeServiceImpl) Name() string {
-	return code.AppName + "-" + ModelName
+	return registerName()
 }
 
 // _ import app 自动执行注册逻辑

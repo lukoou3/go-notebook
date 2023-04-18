@@ -1,4 +1,4 @@
-package shell
+package datasource
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,20 +6,15 @@ import (
 	"go-notebook/apps"
 )
 
-// 面向接口, 真正Service的实现, 在服务实例化的时候传递进行
-// 也就是(CLI)  Start时候
 var handler = &Handler{}
 
-// 通过写一个实例类, 把内部的接口通过HTTP协议暴露出去
-// 所以需要依赖内部接口的实现
-// 该实体类, 会实现Gin的Http Handler
 type Handler struct {
-	svc ShellCodeService
+	svc DatasourceService
 }
 
 func (h *Handler) query(c *gin.Context) {
 	// 从http请求的query string 中获取参数
-	req := NewQueryShellCodeHTTP(c.Request)
+	req := NewQueryDatasourceHTTP(c.Request)
 
 	// 进行接口调用, 返回 肯定有成功或者失败
 	set, err := h.svc.Query(c.Request.Context(), req)
@@ -33,12 +28,12 @@ func (h *Handler) query(c *gin.Context) {
 
 func (h *Handler) Config() {
 	// 从IOC里面获取HostService的实例对象
-	h.svc = apps.GetImpl(h.Name()).(ShellCodeService)
+	h.svc = apps.GetImpl(h.Name()).(DatasourceService)
 }
 
 // 完成了 Http Handler的注册
 func (h *Handler) Registry(r gin.IRouter) {
-	r.GET("/code/shellCode", h.query)
+	r.GET("/sql/datasource", h.query)
 }
 
 func (h *Handler) Name() string {
