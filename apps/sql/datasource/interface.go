@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	ModelName = "datasources"
+	ModelName = "datasource"
 )
 
 func registerName() string {
